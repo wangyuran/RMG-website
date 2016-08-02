@@ -7,6 +7,9 @@
 {% block title %}RMG: Molecule Search{% endblock %}
 
 {% block extrahead %}
+<!-- MolEdit Setup -->
+<script src="http://www.molsoft.com/web/moledit.js" type="text/javascript"></script>
+
 <script type="text/javascript">
 // the function used to resolve the identifier into an adjacency list
 function resolve(){
@@ -40,7 +43,51 @@ var jqxhr = $.get(url,function(names) { $('#species_names').html(names);})
                .error(function(j,t,e) { $('#species_names').html(t+'\n'+e) })
 {% endif %}
 }) // end of document.ready
+
+// Functions to show and hide molecule editor
+var show = function(id) {
+    document.getElementById(id).style.display ='block';
+}
+var hide = function(id) {
+    document.getElementById(id).style.display ='none';
+}
+
+// Function to get SMILES from molecule editor and fetch adjlist
+function submitMolecule() {
+	var mol = document.moledit.getSmiles();
+	$('#id_species_identifier').val(mol);
+	resolve();
+}
+
 </script>
+
+<style type="text/css">
+
+.overlay {
+    display: none;
+    position: fixed;
+    padding: 9px;
+    width: 600px;
+    left: 50%;
+    margin-left: -310px;
+    height: 520px;
+    top: 50%;
+    margin-top:-270px;
+    text-align:center;
+    overflow: auto;
+    background-color: #efefef;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index:20;
+}
+
+#applet {
+    padding: 7px
+}
+
+</style>
+
 {% endblock %}
 
 {% block navbar_items %}
@@ -63,6 +110,16 @@ such as a
 This is translated into an adjacency list using the <a href="http://cactus.nci.nih.gov/chemical/structure">NCI Chemical Identifier Resolver</a>.
 Do not submit the form until the adjacency list has loaded.
 </p>
+
+<div class="overlay" id="editor">
+  <div id="applet"></div>
+  <script>document.moledit = new ChemicalView("", 'applet', 500, 400 );</script>
+  <button type="button" onclick="hide('editor');submitMolecule();">Submit</button>
+  <button type="button" onclick="hide('editor');">Cancel</button>
+</div>
+
+<button type="button" onclick="show('editor');">Structure Input</button>
+
 <form method="post" id="species_form">
 <table>
    
