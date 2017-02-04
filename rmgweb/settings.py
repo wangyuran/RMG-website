@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'rmgweb.database',
     'rmgweb.pdep',
     'rmgweb.rmg',
+    'rmgweb.regression_tests',
 )
 
 # Settings relating to user account management
